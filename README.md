@@ -23,7 +23,7 @@ sqlite.db
 
 ###### initial admin account:
 username: admin\
-password: 123123123
+password: 11111111 - 8 chars
 
 ###### tables:
 users\
