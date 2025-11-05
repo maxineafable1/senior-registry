@@ -1,6 +1,6 @@
 'use client'
 
-import { ChevronUp, Home, User2, UserPlus, UserStar } from "lucide-react"
+import { ChevronUp, Contact, Home, User2, UserPlus, Users, UserStar } from "lucide-react"
 
 import {
   Sidebar,
@@ -42,13 +42,13 @@ const items = [
     id: 4,
     title: "Manage Users",
     url: "/manage-users",
-    icon: UserStar,
+    icon: Users,
   },
   {
     id: 5,
     title: "My Account",
     url: "/senior-citizen",
-    icon: UserStar,
+    icon: Contact,
   },
 ]
 
