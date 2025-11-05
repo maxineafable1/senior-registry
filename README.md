@@ -13,9 +13,11 @@
 
 ## instruction
 
-1. `npm i` or `npm install`
-2. `npm run dev`
-3. click `localhost:3000`
+1. check node version `node -v` - recommend v20+
+2. check npm version `npm -v` - 11.3.0
+3. `npm i` or `npm install`
+4. `npm run dev`
+5. click `localhost:3000`
 
 ## database
 
