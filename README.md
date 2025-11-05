@@ -23,6 +23,18 @@
 
 sqlite.db
 
+### to reset database
+
+1. delete sqlite.db file
+2. run command `npx drizzle-kit push`
+3. go to file app/(auth)/register/page.tsx
+4. comment code from line 8 to 12, then save
+6. run app `npm run dev`
+7. go to `localhost:3000/register`
+8. register username `admin` or any, password 8 chars min, and select role `admin`
+9. uncomment code from line 8 to 12, then save
+10. ok na ty
+
 ###### initial admin account:
 username: admin\
 password: 11111111 - 8 chars
