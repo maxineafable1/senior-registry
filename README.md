@@ -27,7 +27,7 @@ sqlite.db
 
 1. delete sqlite.db file
 2. run command `npx drizzle-kit push`
-3. go to file app/(auth)/register/page.tsx
+3. go to file `app/(auth)/register/page.tsx`
 4. comment code from line 8 to 12, then save
 6. run app `npm run dev`
 7. go to `localhost:3000/register`

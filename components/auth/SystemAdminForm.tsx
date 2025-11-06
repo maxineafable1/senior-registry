@@ -1,16 +1,5 @@
 'use client'
 
-import React from 'react'
-import { useForm } from 'react-hook-form'
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage
-} from '../ui/form'
 import {
   Select,
   SelectContent,
@@ -20,16 +9,27 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Input } from '../ui/input'
-import { Button } from '../ui/button'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useState } from 'react'
-import { systemAdminSchema, SystemAdminSchemaType } from '@/lib/zod/auth-schema'
 import { systemAdminRegister } from '@/lib/actions/auth-action'
-import { login } from '@/lib/actions/session-action'
+import { systemAdminSchema, SystemAdminSchemaType } from '@/lib/zod/auth-schema'
+import { zodResolver } from '@hookform/resolvers/zod'
 import Image from 'next/image'
+import { useForm } from 'react-hook-form'
+import { Button } from '../ui/button'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
+} from '../ui/form'
+import { Input } from '../ui/input'
 
-export default function SystemAdminForm() {
+export default function SystemAdminForm({
+  role,
+}: {
+  role: string | undefined
+}) {
   const form = useForm<SystemAdminSchemaType>({
     resolver: zodResolver(systemAdminSchema),
     defaultValues: {
@@ -109,7 +109,9 @@ export default function SystemAdminForm() {
                   <SelectContent>
                     <SelectGroup>
                       <SelectLabel>Role</SelectLabel>
-                      <SelectItem value="admin">Admin</SelectItem>
+                      {role === "admin" && (
+                        <SelectItem value="admin">Admin</SelectItem>
+                      )}
                       <SelectItem value="staff">Staff</SelectItem>
                       <SelectItem value="user">User</SelectItem>
                     </SelectGroup>

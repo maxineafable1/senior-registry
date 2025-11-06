@@ -8,12 +8,12 @@ export default async function page() {
   if (!session.isLoggedIn)
     redirect('/log-in')
 
-  if (session.role !== "admin")
+  if (session.role === "user")
     redirect('/')
 
   return (
     <div className="">
-      <SystemAdminForm />
+      <SystemAdminForm role={session.role} />
     </div>
   )
 }
