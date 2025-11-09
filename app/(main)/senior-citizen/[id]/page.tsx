@@ -1,23 +1,21 @@
-import { db } from '@/db'
-import { seniors, users } from '@/lib/db/schema'
-import { eq, or } from 'drizzle-orm'
-import { redirect } from 'next/navigation'
+import RemoveBtn from '@/components/main/RemoveBtn';
+import { Button } from '@/components/ui/button';
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableFooter,
   TableHead,
   TableHeader,
   TableRow
 } from "@/components/ui/table";
-import { Button } from '@/components/ui/button';
-import Link from 'next/link';
-import RemoveBtn from '@/components/main/RemoveBtn';
-import Image from 'next/image';
-import { Check } from 'lucide-react';
+import { db } from '@/db';
 import { getSession } from '@/lib/actions/session-action';
+import { seniors, users } from '@/lib/db/schema';
+import { eq, or } from 'drizzle-orm';
+import Image from 'next/image';
+import Link from 'next/link';
+import { redirect } from 'next/navigation';
 
 export default async function page({
   params,
@@ -81,7 +79,7 @@ export default async function page({
               <TableHead>Guardian Name</TableHead>
               <TableHead>Contact Number</TableHead>
               <TableHead>Benefit Claimed</TableHead>
-              <TableHead>Credentials</TableHead>
+              {/* <TableHead>Credentials</TableHead> */}
               {session.role !== "user" && <TableHead>Options</TableHead>}
             </TableRow>
           </TableHeader>
@@ -96,7 +94,7 @@ export default async function page({
               <TableCell>{senior.guardian}</TableCell>
               <TableCell>{senior.contactNumber}</TableCell>
               <TableCell>{senior.benefitClaimed ? 'Yes' : 'No'}</TableCell>
-              <TableCell>
+              {/* <TableCell>
                 <div className="flex gap-2">
                   {senior.psaCertificate && (
                     <div className="flex items-center">
@@ -125,7 +123,7 @@ export default async function page({
                     </div>
                   )}
                 </div>
-              </TableCell>
+              </TableCell> */}
               {session.role !== "user" && (
                 <TableCell className="space-x-2">
                   <Button asChild>
@@ -143,6 +141,58 @@ export default async function page({
           </TableRow> */}
           </TableFooter>
         </Table>
+
+        <h2 className='mt-8 mb-4 font-bold text-lg'>Credentials</h2>
+        <div className="grid grid-cols-2 gap-4">
+          {senior.psaCertificate && (
+            <div className="space-y-2">
+              <div className="text-sm font-bold">PSA Certificate</div>
+              <Image
+                src={senior.psaCertificate}
+                alt=''
+                width={'800'}
+                height={'800'}
+                className=' block rounded-xl'
+              />
+            </div>
+          )}
+          {senior.pwdId && (
+            <div className="space-y-2">
+              <div className="text-sm font-bold">PWD ID</div>
+              <Image
+                src={senior.pwdId}
+                alt=''
+                width={'800'}
+                height={'800'}
+                className=' block rounded-xl'
+              />
+            </div>
+          )}
+          {senior.seniorId && (
+            <div className="space-y-2">
+              <div className="text-sm font-bold">Senior ID</div>
+              <Image
+                src={senior.seniorId}
+                alt=''
+                width={'800'}
+                height={'800'}
+                className=' block rounded-xl'
+              />
+            </div>
+          )}
+          {senior.philhealthId && (
+            <div className="space-y-2">
+              <div className="text-sm font-bold">Philhealth ID</div>
+              <Image
+                src={senior.philhealthId}
+                alt=''
+                width={'800'}
+                height={'800'}
+                className=' block rounded-xl'
+              />
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )

@@ -42,18 +42,24 @@ export default function RegisterForm() {
       birthdate: undefined,
       contact: '',
       benefitClaimed: false,
-      psaCertificate: false,
-      pwdId: false,
-      seniorId: false,
-      philhealthId: false,
     }
   })
 
   async function onSubmit(values: SeniorRegisterSchemaType) {
-    console.log(values)
-    const formData = new FormData();
-    if (values.image) {
-      formData.append("image", values.image);
+    const files = [
+      values.image,
+      values.psaCertificate,
+      values.pwdId,
+      values.seniorId,
+      values.philhealthId
+    ]
+
+    if (!files.every(file => !file)) {
+      const formData = new FormData();
+
+      for (let i = 0; i < files.length; i++) {
+        formData.append(`files[]`, files[i] ?? '')
+      }
 
       const res = await fetch('/api/upload', {
         method: 'POST',
@@ -61,22 +67,40 @@ export default function RegisterForm() {
       })
 
       const data = await res.json()
-      console.log(data)
 
-      await registerSenior({
+      const uploadedFiles = {
+        image: data.urls[0],
+        psaCertificate: data.urls[1],
+        pwdId: data.urls[2],
+        seniorId: data.urls[3],
+        philhealthId: data.urls[4],
+      }
+
+      console.log(uploadedFiles)
+
+      const newData = {
         ...values,
         contactNumber: values.contact,
         birthdate: values.birthdate.toLocaleDateString(),
-      }, data.url)
+        ...uploadedFiles,
+      }
 
+      await registerSenior(newData)
       return
     }
 
-    await registerSenior({
+    const newData = {
       ...values,
       contactNumber: values.contact,
       birthdate: values.birthdate.toLocaleDateString(),
-    })
+      image: null,
+      psaCertificate: null,
+      pwdId: null,
+      seniorId: null,
+      philhealthId: null,
+    }
+
+    await registerSenior(newData)
   }
 
   return (
@@ -242,11 +266,17 @@ export default function RegisterForm() {
               <FormField
                 control={form.control}
                 name="psaCertificate"
-                render={({ field }) => (
-                  <FormItem className='flex'>
+                render={({ field: { value, onChange, ...fieldProps } }) => (
+                  <FormItem>
                     <FormLabel>PSA Certificate</FormLabel>
                     <FormControl>
-                      <Checkbox onCheckedChange={field.onChange} checked={field.value} />
+                      <Input
+                        {...fieldProps}
+                        onChange={e =>
+                          onChange(e.target.files && e.target.files[0])
+                        }
+                        accept='image/*'
+                        type='file' />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -255,11 +285,17 @@ export default function RegisterForm() {
               <FormField
                 control={form.control}
                 name="pwdId"
-                render={({ field }) => (
-                  <FormItem className='flex'>
+                render={({ field: { value, onChange, ...fieldProps } }) => (
+                  <FormItem>
                     <FormLabel>PWD ID</FormLabel>
                     <FormControl>
-                      <Checkbox onCheckedChange={field.onChange} checked={field.value} />
+                      <Input
+                        {...fieldProps}
+                        onChange={e =>
+                          onChange(e.target.files && e.target.files[0])
+                        }
+                        accept='image/*'
+                        type='file' />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -270,11 +306,17 @@ export default function RegisterForm() {
               <FormField
                 control={form.control}
                 name="seniorId"
-                render={({ field }) => (
-                  <FormItem className='flex'>
+                render={({ field: { value, onChange, ...fieldProps } }) => (
+                  <FormItem>
                     <FormLabel>Senior ID</FormLabel>
                     <FormControl>
-                      <Checkbox onCheckedChange={field.onChange} checked={field.value} />
+                      <Input
+                        {...fieldProps}
+                        onChange={e =>
+                          onChange(e.target.files && e.target.files[0])
+                        }
+                        accept='image/*'
+                        type='file' />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -283,11 +325,17 @@ export default function RegisterForm() {
               <FormField
                 control={form.control}
                 name="philhealthId"
-                render={({ field }) => (
-                  <FormItem className='flex'>
+                render={({ field: { value, onChange, ...fieldProps } }) => (
+                  <FormItem>
                     <FormLabel>Philhealth ID</FormLabel>
                     <FormControl>
-                      <Checkbox onCheckedChange={field.onChange} checked={field.value} />
+                      <Input
+                        {...fieldProps}
+                        onChange={e =>
+                          onChange(e.target.files && e.target.files[0])
+                        }
+                        accept='image/*'
+                        type='file' />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -295,7 +343,12 @@ export default function RegisterForm() {
               />
             </div>
           </div>
-          <Button type="submit" className='w-full cursor-pointer'>Confirm Registration</Button>
+          <Button
+            disabled={form.formState.isSubmitting}
+            type="submit"
+            className='w-full cursor-pointer'>
+            {form.formState.isSubmitting ? 'Loading...' : 'Confirm Registration'}
+          </Button>
         </form>
       </Form>
     </div>

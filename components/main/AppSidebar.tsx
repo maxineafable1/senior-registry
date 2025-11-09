@@ -62,7 +62,7 @@ export function AppSidebar({
   userId: number | undefined
 }) {
   const userOnly = [1, 5]
-  const staffOnly = [1, 2, 4]
+  const staffOnly = [1, 2, 3, 4]
 
   return (
     <Sidebar>
@@ -76,7 +76,8 @@ export function AppSidebar({
             <SidebarMenu>
               {items
                 // .filter(i => role !== "admin" ? i.id !== 3 : i)
-                .filter(i => role === "user" ? userOnly.includes(i.id) : role !== "admin" ? staffOnly.includes(i.id) : i.id !== 5)
+                // .filter(i => role === "user" ? userOnly.includes(i.id) : role !== "admin" ? staffOnly.includes(i.id) : i.id !== 5)
+                .filter(i => role === "user" ? userOnly.includes(i.id) : i.id !== 5)
                 .map((item) => (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton asChild>

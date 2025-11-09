@@ -109,10 +109,10 @@ export default function SystemAdminForm({
                   <SelectContent>
                     <SelectGroup>
                       <SelectLabel>Role</SelectLabel>
-                      {role === "admin" && (
+                      {role === "admin" && <>
                         <SelectItem value="admin">Admin</SelectItem>
-                      )}
-                      <SelectItem value="staff">Staff</SelectItem>
+                        <SelectItem value="staff">Staff</SelectItem>
+                      </>}
                       <SelectItem value="user">User</SelectItem>
                     </SelectGroup>
                   </SelectContent>
@@ -121,7 +121,11 @@ export default function SystemAdminForm({
               </FormItem>
             )}
           />
-          <Button type="submit" className='w-full'>Register</Button>
+          <Button
+            disabled={form.formState.isSubmitting}
+            type="submit" className='w-full'>
+            {form.formState.isSubmitting ? 'Loading...' : 'Register'}
+          </Button>
         </form>
       </Form>
     </div>

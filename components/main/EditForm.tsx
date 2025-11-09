@@ -39,10 +39,11 @@ type SeniorData = {
   contactNumber: string;
   birthdate: string;
   benefitClaimed: boolean;
-  psaCertificate: boolean;
-  pwdId: boolean;
-  seniorId: boolean;
-  philhealthId: boolean;
+  psaCertificate: string | null;
+  pwdId: string | null;
+  seniorId: string | null;
+  philhealthId: string | null;
+  imageUrl: string | null;
   createdAt: Date | null;
   updatedAt: Date | null;
 }
@@ -62,6 +63,7 @@ export default function EditForm({
     pwdId,
     seniorId,
     philhealthId,
+    imageUrl,
   }
 }: {
   senior: SeniorData
@@ -78,18 +80,24 @@ export default function EditForm({
       birthdate: new Date(birthdate),
       contact: contactNumber,
       benefitClaimed,
-      psaCertificate,
-      pwdId,
-      seniorId,
-      philhealthId,
     }
   })
 
   async function onSubmit(values: SeniorRegisterSchemaType) {
-    console.log(values)
-    const formData = new FormData();
-    if (values.image) {
-      formData.append("image", values.image);
+    const files = [
+      values.image,
+      values.psaCertificate,
+      values.pwdId,
+      values.seniorId,
+      values.philhealthId
+    ]
+
+    if (!files.every(file => !file)) {
+      const formData = new FormData();
+
+      for (let i = 0; i < files.length; i++) {
+        formData.append(`files[]`, files[i] ?? '')
+      }
 
       const res = await fetch('/api/upload', {
         method: 'POST',
@@ -97,22 +105,40 @@ export default function EditForm({
       })
 
       const data = await res.json()
-      console.log(data)
 
-      await updateSenior(id, {
+      const uploadedFiles = {
+        image: data.urls[0] ?? imageUrl,
+        psaCertificate: data.urls[1] ?? psaCertificate,
+        pwdId: data.urls[2] ?? pwdId,
+        seniorId: data.urls[3] ?? seniorId,
+        philhealthId: data.urls[4] ?? philhealthId,
+      }
+
+      console.log(uploadedFiles)
+
+      const newData = {
         ...values,
         contactNumber: values.contact,
         birthdate: values.birthdate.toLocaleDateString(),
-      }, data.url)
+        ...uploadedFiles,
+      }
 
+      await updateSenior(id, newData)
       return
     }
 
-    await updateSenior(id, {
+    const newData = {
       ...values,
       contactNumber: values.contact,
       birthdate: values.birthdate.toLocaleDateString(),
-    })
+      image: imageUrl,
+      psaCertificate,
+      pwdId,
+      seniorId,
+      philhealthId,
+    }
+
+    await updateSenior(id, newData)
   }
 
   return (
@@ -291,11 +317,17 @@ export default function EditForm({
               <FormField
                 control={form.control}
                 name="psaCertificate"
-                render={({ field }) => (
-                  <FormItem className='flex'>
+                render={({ field: { value, onChange, ...fieldProps } }) => (
+                  <FormItem>
                     <FormLabel>PSA Certificate</FormLabel>
                     <FormControl>
-                      <Checkbox onCheckedChange={field.onChange} checked={field.value} />
+                      <Input
+                        {...fieldProps}
+                        onChange={e =>
+                          onChange(e.target.files && e.target.files[0])
+                        }
+                        accept='image/*'
+                        type='file' />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -304,11 +336,17 @@ export default function EditForm({
               <FormField
                 control={form.control}
                 name="pwdId"
-                render={({ field }) => (
-                  <FormItem className='flex'>
+                render={({ field: { value, onChange, ...fieldProps } }) => (
+                  <FormItem>
                     <FormLabel>PWD ID</FormLabel>
                     <FormControl>
-                      <Checkbox onCheckedChange={field.onChange} checked={field.value} />
+                      <Input
+                        {...fieldProps}
+                        onChange={e =>
+                          onChange(e.target.files && e.target.files[0])
+                        }
+                        accept='image/*'
+                        type='file' />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -319,11 +357,17 @@ export default function EditForm({
               <FormField
                 control={form.control}
                 name="seniorId"
-                render={({ field }) => (
-                  <FormItem className='flex'>
+                render={({ field: { value, onChange, ...fieldProps } }) => (
+                  <FormItem>
                     <FormLabel>Senior ID</FormLabel>
                     <FormControl>
-                      <Checkbox onCheckedChange={field.onChange} checked={field.value} />
+                      <Input
+                        {...fieldProps}
+                        onChange={e =>
+                          onChange(e.target.files && e.target.files[0])
+                        }
+                        accept='image/*'
+                        type='file' />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -332,11 +376,17 @@ export default function EditForm({
               <FormField
                 control={form.control}
                 name="philhealthId"
-                render={({ field }) => (
-                  <FormItem className='flex'>
+                render={({ field: { value, onChange, ...fieldProps } }) => (
+                  <FormItem>
                     <FormLabel>Philhealth ID</FormLabel>
                     <FormControl>
-                      <Checkbox onCheckedChange={field.onChange} checked={field.value} />
+                      <Input
+                        {...fieldProps}
+                        onChange={e =>
+                          onChange(e.target.files && e.target.files[0])
+                        }
+                        accept='image/*'
+                        type='file' />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -344,7 +394,12 @@ export default function EditForm({
               />
             </div>
           </div>
-          <Button type="submit" className='w-full cursor-pointer'>Save Data</Button>
+          <Button
+            disabled={form.formState.isSubmitting}
+            type="submit"
+            className='w-full cursor-pointer'>
+            {form.formState.isSubmitting ? 'Loading...' : 'Save Data'}
+          </Button>
         </form>
       </Form>
     </div>

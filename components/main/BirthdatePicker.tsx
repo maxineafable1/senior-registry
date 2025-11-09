@@ -11,6 +11,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { useState } from "react"
+import { DateRange } from "react-day-picker"
 
 export function BirthdatePicker({
   onValueChange,
@@ -45,6 +46,10 @@ export function BirthdatePicker({
               setOpen(false)
 
               onValueChange(date)
+            }}
+            disabled={{
+              before: new Date(2025, 12, 31),
+              after: new Date(1965, 11, 31),
             }}
           />
         </PopoverContent>
