@@ -31,7 +31,7 @@ export const seniors = sqliteTable('seniors', {
   guardian: text().notNull(),
   contactNumber: text('contact_number').notNull(),
   birthdate: text().notNull(),
-  benefitClaimed: integer('benefit_claimed', { mode: 'boolean' }).notNull().default(false),
+  // benefitClaimed: integer('benefit_claimed', { mode: 'boolean' }).notNull().default(false),
   psaCertificate: text('psa_certificate'),
   pwdId: text('pwd_id'),
   seniorId: text('senior_id'),
@@ -47,4 +47,17 @@ export const seniors = sqliteTable('seniors', {
 })
 
 export type NewSenior = typeof seniors.$inferInsert;
+
+export const benefits = sqliteTable('benefits', {
+  id: integer({ mode: 'number' }).primaryKey({ autoIncrement: true }),
+  seniorClaimed: integer('senior_claimed', { mode: 'boolean' }).notNull().default(false),
+  seniorDate: text("senior_date"),
+  seniorId: integer('senior_id').references(() => seniors.id, { onDelete: 'cascade' }).unique(),
+  createdAt: integer("created_at", { mode: "timestamp" }).default(
+    sql`(strftime('%s', 'now'))`
+  ),
+  updatedAt: integer("updated_at", { mode: "timestamp" })
+    .default(sql`(strftime('%s', 'now'))`)
+    .$onUpdate(() => new Date()),
+})
 

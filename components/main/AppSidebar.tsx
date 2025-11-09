@@ -104,7 +104,7 @@ export function AppSidebar({
               </DropdownMenuTrigger>
               <DropdownMenuContent
                 side="top"
-                className="w-sm"
+                className="w-[20rem]"
               >
                 <DropdownMenuItem onClick={async () => {
                   await logout()

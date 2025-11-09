@@ -72,7 +72,12 @@ export default async function page({
                 </Button> */}
               </TableCell>
               <TableCell>
-                <ManageUserDeleteBtn id={id} sessionId={session.id} />
+                {session.role === "staff" && role !== "admin" && (
+                  <ManageUserDeleteBtn id={id} sessionId={session.id} />
+                )}
+                {session.role === "admin" && (
+                  <ManageUserDeleteBtn id={id} sessionId={session.id} />
+                )}
               </TableCell>
             </TableRow>
           ))}

@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/table";
 import { db } from '@/db';
 import { getSession } from '@/lib/actions/session-action';
-import { seniors, users } from '@/lib/db/schema';
+import { benefits, seniors, users } from '@/lib/db/schema';
 import { eq, or } from 'drizzle-orm';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -29,11 +29,15 @@ export default async function page({
 
   const { id } = await params
 
-  const senior = await db.query.seniors.findFirst({
-    where: (or(eq(seniors.id, +id), eq(seniors.userId, +id))),
-  })
+  const seniorData = await db.select().from(seniors)
+    .leftJoin(benefits, eq(benefits.seniorId, seniors.id))
+    .where((or(eq(seniors.id, +id), eq(seniors.userId, +id))))
+    .limit(1)
 
-  if (!senior)
+  const senior = seniorData.at(0)?.seniors
+  const benefit = seniorData.at(0)?.benefits
+
+  if (!seniorData || !senior || !benefit)
     redirect('/')
 
 
@@ -79,6 +83,7 @@ export default async function page({
               <TableHead>Guardian Name</TableHead>
               <TableHead>Contact Number</TableHead>
               <TableHead>Benefit Claimed</TableHead>
+              <TableHead>Next Claimable Date</TableHead>
               {/* <TableHead>Credentials</TableHead> */}
               {session.role !== "user" && <TableHead>Options</TableHead>}
             </TableRow>
@@ -93,7 +98,12 @@ export default async function page({
               <TableCell>{senior.address}</TableCell>
               <TableCell>{senior.guardian}</TableCell>
               <TableCell>{senior.contactNumber}</TableCell>
-              <TableCell>{senior.benefitClaimed ? 'Yes' : 'No'}</TableCell>
+              <TableCell>
+                {benefit.seniorClaimed ? 'Yes' : 'No'}
+              </TableCell>
+              <TableCell>
+                {benefit.seniorDate}
+              </TableCell>
               {/* <TableCell>
                 <div className="flex gap-2">
                   {senior.psaCertificate && (

@@ -31,7 +31,6 @@ export const seniorRegisterSchema = z.object({
   contact: z.string()
     .min(11, { error: "Please enter valid 11 digit contact number.", })
     .max(11, { error: 'Please enter valid 11 digit contact number.' }),
-  benefitClaimed: z.boolean(),
   psaCertificate: z.instanceof(File)
     .refine(file => file.size <= MAX_FILE_SIZE, { error: 'File size must be 2MB or less' })
     .optional(),

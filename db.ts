@@ -1,6 +1,6 @@
 import Database from 'better-sqlite3';
 import { drizzle } from 'drizzle-orm/better-sqlite3';
-import { seniors, users } from './lib/db/schema';
+import { benefits, seniors, users } from './lib/db/schema';
 
 const sqlite = new Database(process.env.DATABASE_URL!);
 export const db = drizzle({
@@ -8,5 +8,6 @@ export const db = drizzle({
   schema: {
     users,
     seniors,
+    benefits,
   },
 });

@@ -38,7 +38,6 @@ type SeniorData = {
   guardian: string;
   contactNumber: string;
   birthdate: string;
-  benefitClaimed: boolean;
   psaCertificate: string | null;
   pwdId: string | null;
   seniorId: string | null;
@@ -58,7 +57,6 @@ export default function EditForm({
     contactNumber,
     gender,
     guardian,
-    benefitClaimed,
     psaCertificate,
     pwdId,
     seniorId,
@@ -79,7 +77,6 @@ export default function EditForm({
       guardian,
       birthdate: new Date(birthdate),
       contact: contactNumber,
-      benefitClaimed,
     }
   })
 
@@ -298,7 +295,7 @@ export default function EditForm({
               )}
             />
           </div>
-          <FormField
+          {/* <FormField
             control={form.control}
             name="benefitClaimed"
             render={({ field }) => (
@@ -310,7 +307,7 @@ export default function EditForm({
                 <FormMessage />
               </FormItem>
             )}
-          />
+          /> */}
           <div className="space-y-4">
             <div className="text-sm font-bold">Credential(s)</div>
             <div className="flex gap-8">

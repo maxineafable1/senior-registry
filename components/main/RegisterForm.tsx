@@ -41,7 +41,6 @@ export default function RegisterForm() {
       guardian: '',
       birthdate: undefined,
       contact: '',
-      benefitClaimed: false,
     }
   })
 

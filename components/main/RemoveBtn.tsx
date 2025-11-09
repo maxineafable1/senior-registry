@@ -16,17 +16,14 @@ import { deleteSeniorData } from "@/lib/actions/senior-register-action"
 
 export default function RemoveBtn({
   id,
-  setIsDeleting,
 }: {
   id: number
-  setIsDeleting?: React.Dispatch<React.SetStateAction<boolean>>
 }) {
 
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild onClick={e => {
         e.stopPropagation()
-        setIsDeleting?.(true)
       }}>
         <Button
           variant="destructive"
@@ -46,7 +43,6 @@ export default function RemoveBtn({
           <AlertDialogAction
             onClick={async () => {
               await deleteSeniorData(id)
-              setIsDeleting?.(false)
             }}
             className="bg-red-500 hover:bg-red-600">Confirm Deletion</AlertDialogAction>
         </AlertDialogFooter>

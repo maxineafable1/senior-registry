@@ -6,7 +6,7 @@ import { eq } from "drizzle-orm"
 import { getIronSession } from "iron-session"
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
-import { users } from "../db/schema"
+import { seniors, users } from "../db/schema"
 import { defaultSession, SessionData, sessionOptions } from "../session"
 
 export async function getSession() {
@@ -34,6 +34,15 @@ export async function login(username: string, password: string) {
 
   if (!match)
     return { error: 'Incorrect username or password' }
+
+  if (checkUser.role === "user") {
+    const hasSenioAcc = await db.query.seniors.findFirst({
+      where: eq(seniors.userId, checkUser.id)
+    })
+
+    if (!hasSenioAcc)
+      return { error: 'There is no senior data linked to this user.' }
+  }
 
   session.id = checkUser.id
   session.username = checkUser.username
